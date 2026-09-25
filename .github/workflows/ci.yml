@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install backend deps
+        run: |
+          cd backend
+          npm ci
+
+      - name: Generate Prisma client
+        run: |
+          cd backend
+          npx prisma generate
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm test
+
+      - name: Generate TS client from OpenAPI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # generate typescript client into frontend/generated-client using docker image
+          if [ -f api-contracts/api.yaml ]; then
+            docker run --rm -v "$PWD":/local openapitools/openapi-generator-cli generate -i /local/api-contracts/api.yaml -g typescript-fetch -o /local/frontend/generated-client
+          else
+            echo "No api-contracts/api.yaml found — skipping client generation"
+          fi

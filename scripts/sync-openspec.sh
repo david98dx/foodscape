@@ -8,9 +8,11 @@ cd "$REPO_ROOT"
 SUBDIR="docs/openspec-submodule"
 DESTDIR="docs/openspec"
 
+CLONED_TEMP=0
 if [ ! -d "$SUBDIR" ]; then
-  echo "Submodule $SUBDIR not found"
-  exit 1
+  echo "Submodule $SUBDIR not found — clonando temporalmente desde https://github.com/Fission-AI/openspec.git"
+  git clone --depth 1 https://github.com/Fission-AI/openspec.git "$SUBDIR"
+  CLONED_TEMP=1
 fi
 
 mkdir -p "$DESTDIR"
@@ -41,3 +43,8 @@ echo "Pushing changes to origin/$BRANCH"
 git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:"$BRANCH"
 
 echo "Sync complete."
+
+if [ "$CLONED_TEMP" -eq 1 ]; then
+  echo "Removing temporary clone $SUBDIR"
+  rm -rf "$SUBDIR"
+fi

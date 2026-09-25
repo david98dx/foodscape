@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Food {
+  id        String   @id @default(uuid())
+  name      String
+  description String?
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String?
+}
+
+model Order {
+  id        String   @id @default(uuid())
+  userId    String
+  total     Float
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model InventoryItem {
+  id        String   @id @default(uuid())
+  sku       String   @unique
+  quantity  Int
+}
+
+model BillingInvoice {
+  id        String   @id @default(uuid())
+  orderId   String
+  amount    Float
+  paid      Boolean  @default(false)
+}
+
+// Event store for simple event sourcing
+model DomainEvent {
+  id           String   @id @default(uuid())
+  aggregateId   String
+  aggregateType String
+  type         String
+  payload      Json
+  createdAt    DateTime @default(now())
+}

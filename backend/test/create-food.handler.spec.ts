@@ -1,5 +1,15 @@
-import { CreateFoodHandler } from '../src/application/foods/commands/handlers/create-food.handler';
-import { CreateFoodCommand } from '../src/application/foods/commands/create-food.command';
+// Mock @nestjs/cqrs which distributes ESM files that Jest may not parse
+jest.mock('@nestjs/cqrs', () => ({
+  CommandHandler: (cmd: any) => (target: any) => target,
+  ICommandHandler: class {},
+  EventBus: class { publish(e: any) { /* noop */ } },
+}));
+
+// Ensure TypeScript path resolution works in tests
+process.env.TS_NODE_PROJECT = './backend/tsconfig.json';
+
+import { CreateFoodHandler } from '../../backend/src/application/foods/commands/handlers/create-food.handler';
+import { CreateFoodCommand } from '../../backend/src/application/foods/commands/create-food.command';
 
 class MockRepo {
   created: any = null;

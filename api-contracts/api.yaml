@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: Foodscape API
+  version: 0.1.0
+  description: Contrato OpenAPI para frontend y apps móviles (MySQL como BD más adelante)
+servers:
+  - url: http://localhost:3000/api
+paths:
+  /foods:
+    get:
+      summary: Obtener lista de alimentos
+      tags:
+        - foods
+      responses:
+        '200':
+          description: Lista de alimentos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Food'
+    post:
+      summary: Crear un alimento
+      tags:
+        - foods
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FoodCreate'
+      responses:
+        '201':
+          description: Alimento creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Food'
+components:
+  schemas:
+    Food:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        calories:
+          type: integer
+    FoodCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        calories:
+          type: integer

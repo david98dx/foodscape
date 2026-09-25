@@ -1,0 +1,16 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "Minimal NestJS scaffold — instalar dependencias luego (requiere Node 22)",
+  "private": true,
+  "scripts": {
+    "start": "node dist/main.js",
+    "start:dev": "nest start --watch",
+    "build": "nest build"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
